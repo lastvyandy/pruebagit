@@ -86,19 +86,16 @@ jobs:
 # Se libera un paquete     
       
        
-    - name: Publicar en paquete de github
-      uses: docker/login-action@v1
+    - name: Publish to GitHub Packages
+      uses: docker/build-push-action@v1
       with:
-         registry: ghcr.io
          username: ${{ github.actor }}
          password: ${{ secrets.GITHUB_TOKEN }}
+         registry: docker.pkg.github.com
+         repository: ${{ github.repository }}/webnext
+         tags: latest, ${{ github.run_number }}
 
     
-    - name: Crear variable del nuevo tag
-      run: |
-       docker build . --tag ghcr.io/deselikem/hello-docker-gcr-demo:latest
-       docker run ghcr.io/deselikem/hello-docker-gcr-demo:latest
-       docker push ghcr.io/deselikem/hello-docker-gcr-demo:latest
-          
+ 
 
   
