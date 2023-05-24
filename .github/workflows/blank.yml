@@ -85,13 +85,10 @@ jobs:
 
 # Se libera un paquete     
       
-      
+       
     - name: Publicar en paquete de github
-      uses: docker/build-push-action@v4
+      uses: macbre/push-to-ghcr@master
       with:
-         username: ${{ github.actor }}
-         password: ${{ secrets.GITHUB_TOKEN }}
-         registry: docker.pkg.github.com
-         repository: ${{ github.repository }}/${{ github.run_number }}
-         tags: packageversion, ${{ github.run_number }}
+         image_name: ${{ github.repository }}
+         github_token: ${{ secrets.GITHUB_TOKEN }}
           
