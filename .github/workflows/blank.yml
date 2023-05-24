@@ -87,10 +87,18 @@ jobs:
       
        
     - name: Publicar en paquete de github
-      uses: VaultVulp/gp-docker-action@1.1.12
+      uses: docker/login-action@v1
       with:
-         github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
-         image-name: my-cool-service # Provide only Docker image name, tag will be automatically set to latest
-         dockerfile: Dockerfile_server
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
+
+    
+    - name: Crear variable del nuevo tag
+      run: |
+       docker build . --tag ghcr.io/deselikem/hello-docker-gcr-demo:latest
+       docker run ghcr.io/deselikem/hello-docker-gcr-demo:latest
+       docker push ghcr.io/deselikem/hello-docker-gcr-demo:latest
           
 
+  
