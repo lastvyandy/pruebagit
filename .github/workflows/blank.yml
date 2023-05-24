@@ -1,0 +1,97 @@
+name: Construir imagen docker (y liberar release)
+
+
+# Aqui esta esperando un evento, en este caso un "push" dentro del branch "qa"
+
+on:
+  push:
+   
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+    tags:
+      - '1.0'
+
+
+permissions:
+  contents: write
+  pull-requests: write 
+  issues: read
+  packages: none
+
+jobs:
+
+
+
+# Build, aqui especificamos en que sistema va a correr, en este caso utilizamos ubuntu-latest, pero podemos
+# utilizar otros sistemas, como windows-latest y macos-latest
+  build:
+
+    runs-on: ubuntu-latest
+
+# Steps, aqui esta lo que hara el sistema cuando ocurra la accion especificada arriba, en el caso de la de
+# abajo, sera construir la imagen docker
+
+    steps:
+    
+      
+      
+      
+
+      
+    
+      
+    #- name: Obtener nombre de release
+     # run: |
+      #    GITHUB_REF=${{ github.ref }}
+       #   RELEASE_NAME=${GITHUB_REF#"refs/tags/"}
+        #  echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
+
+
+
+      
+    - name: Auto Incrementar version de tag
+      uses: MCKanpolat/auto-semver-action@v1
+      id: versioning
+      with:
+        releaseType: patch 
+        incrementPerCommit: false
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        DRY_RUN: true
+
+    - name: Crear variable del nuevo tag
+      run: |
+        echo "The next tag version will be: ${{ steps.taggerDryRun.outputs.new_tag }}"
+
+
+    - name: Crear release y subirla
+      id: create_release
+      uses: actions/create-release@v1
+       
+
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+          tag_name: ${{ steps.versioning.outputs.version }}
+          release_name: QA Release ${{ steps.versioning.outputs.version }}
+          body: |
+            Cambios en este release
+            - Primer cambio (reemplazar con variables, solo a modo de ejemplo)
+            - Segundo cambio (reemplazar con variables, solo a modo de ejemplo)
+          draft: false
+          prerelease: false
+
+
+# Se libera un paquete     
+      
+      
+    - name: Publicar en paquete de github
+      uses: docker/build-push-action@v4
+      with:
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
+         registry: docker.pkg.github.com
+         repository: ${{ github.repository }}/${{ github.run_number }}
+         tags: packageversion, ${{ github.run_number }}
+          
