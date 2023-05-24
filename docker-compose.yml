@@ -1,0 +1,23 @@
+version: "3.5"
+
+services:
+    intro_container_dev:
+        build:
+            context: .
+            target: develop_image
+        container_name: intro_container_dev
+        tty: true
+        volumes:
+            - ./:/home/appadmin/app
+            - ext_vol:/home/appadmin/.vscode-server/extensions
+            - ext_insd_vol:/home/appadmin/.vscode-server-insiders/extensions
+        networks:
+            - vanda-practica-network
+
+volumes:
+    ext_vol:
+    ext_insd_vol:
+
+
+networks:
+    vanda-practica-network:

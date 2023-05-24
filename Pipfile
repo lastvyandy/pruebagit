@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+structlog = "==22.3.0"
+pyyaml = "*"
+pandas = "*"
+openpyxl = "*"
+sqlalchemy = "*"
+
+[dev-packages]
+black = "*"
+isort = "*"
+flake8 = "*"
+pytest = "*"
+pytest-cov = "*"
+
+[requires]
+python_version = "3.11"
+
+[pipenv]
+allow_prereleases = true
