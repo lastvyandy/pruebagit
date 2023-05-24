@@ -6,9 +6,9 @@ name: Construir imagen docker (y liberar release)
 on:
   push:
    
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
     tags:
       - '1.0'
