@@ -87,8 +87,10 @@ jobs:
       
        
     - name: Publicar en paquete de github
-      uses: macbre/push-to-ghcr@master
+      uses: VaultVulp/gp-docker-action@1.1.12
       with:
-         image_name: ${{ github.repository }}
-         github_token: ${{ secrets.GITHUB_TOKEN }}
+         github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
+         image-name: my-cool-service # Provide only Docker image name, tag will be automatically set to latest
+         dockerfile: Dockerfile_server
           
+
