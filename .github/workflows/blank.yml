@@ -52,15 +52,21 @@ jobs:
         #  echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
 
 
-    - name: Extract release notes
-      id: extract-release-notes
-      uses: ffurrer2/extract-release-notes@v1
+    - name: generate_notes
+      id: generate_notes
+      uses: anmarkoulis/commitizen-changelog-reader@master
       
       with:
-          changelog_file: CHANGELOG.md
+          tag_name: ${{ github.ref }}
+          changelog: CHANGELOG.md
+
+      
+    
 
 
 
+
+   
 
 
 
