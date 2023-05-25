@@ -52,6 +52,21 @@ jobs:
         #  echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
 
 
+    - name: Extract release notes
+      id: extract-release-notes
+      uses: ffurrer2/extract-release-notes@v1
+      
+      with:
+          changelog_file: CHANGELOG.md
+
+
+
+
+
+
+
+
+
 
       
     - name: Auto Incrementar version de tag
@@ -68,31 +83,27 @@ jobs:
         echo "The next tag version will be: ${{ steps.taggerDryRun.outputs.new_tag }}"
 
 
-
-    - name: Extract release notes
-      id: extract-release-notes
-      uses: ffurrer2/extract-release-notes@v1
-      
-      with:
-          changelog_file: CHANGELOG.md
-
-
-
-
-
     - name: Crear release y subirla
       id: create_release
       uses: actions/create-release@v1
-    
+       
 
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
           tag_name: ${{ steps.versioning.outputs.version }}
           release_name: QA Release ${{ steps.versioning.outputs.version }}
-          body: ${{ steps.extract-release-notes.outputs.release_notes }}
+          body: |
+            Cambios en este release
+            - Primer cambio (reemplazar con variables, solo a modo de ejemplo)
+            - Segundo cambio (reemplazar con variables, solo a modo de ejemplo)
           draft: false
           prerelease: false
+
+
+
+
+
 
 
 # Se libera un paquete     
