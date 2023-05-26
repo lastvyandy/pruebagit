@@ -6,9 +6,9 @@ name: Construir imagen docker (y liberar release)
 on:
   push:
    
-    branches: [ "master" ]
+    branches: [ "qa" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "qa" ]
 
     tags:
       - '1.0'
@@ -18,7 +18,7 @@ permissions:
   contents: write
   pull-requests: write 
   issues: read
-  packages: none
+  packages: write
 
 jobs:
 
@@ -35,7 +35,10 @@ jobs:
 
     steps:
     
-      
+    - uses: actions/checkout@v3
+    - name: Construir imagen de docker 
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+        
       
       
 
@@ -47,6 +50,18 @@ jobs:
       #    GITHUB_REF=${{ github.ref }}
        #   RELEASE_NAME=${GITHUB_REF#"refs/tags/"}
         #  echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
+
+
+    
+
+
+
+
+   
+
+
+
+
 
 
 
@@ -65,6 +80,17 @@ jobs:
         echo "The next tag version will be: ${{ steps.taggerDryRun.outputs.new_tag }}"
 
 
+
+  
+    - name: Conventional changelog
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v3.7.1  
+      with:
+       github-token: ${{ secrets.CHANGELOG_RELEASE }}
+
+
+
+
     - name: Crear release y subirla
       id: create_release
       uses: actions/create-release@v1
@@ -75,23 +101,91 @@ jobs:
       with:
           tag_name: ${{ steps.versioning.outputs.version }}
           release_name: QA Release ${{ steps.versioning.outputs.version }}
-          body: |
-            Cambios en este release
-            - Primer cambio (reemplazar con variables, solo a modo de ejemplo)
-            - Segundo cambio (reemplazar con variables, solo a modo de ejemplo)
+          body: ${{ steps.changelog.outputs.tag }}
           draft: false
           prerelease: false
 
 
+
+
+
+
+
+
+
+
 # Se libera un paquete     
       
-      
-    - name: Publicar en paquete de github
-      uses: docker/build-push-action@v4
+       
+    - name: Publish to GitHub Packages
+      uses: docker/build-push-action@v1
       with:
          username: ${{ github.actor }}
          password: ${{ secrets.GITHUB_TOKEN }}
          registry: docker.pkg.github.com
-         repository: ${{ github.repository }}/${{ github.run_number }}
-         tags: packageversion, ${{ github.run_number }}
-          
+         repository: ${{ github.repository }}${{steps.versioning.outputs.version }}/qa
+         tags: latest, ${{ github.run_number }}
+
+    
+
+
+
+   # - name: Log in to the Container registry
+   #   uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+   #   with:
+    #     username: ${{ github.actor }}
+     #    password: ${{ secrets.GITHUB_TOKEN }}
+      #   registry: ${{ env.REGISTRY }} 
+
+
+
+#    - name: Extract metadata (tags, labels) for Docker
+ #     id: meta
+  #    uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+   #   with:
+    #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+     #    tags: |
+      #      type=ref,event=branch
+       #     type=sha
+     
+
+   # - name: Build and push Docker image
+    #  uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+     # with:
+      #   context: .
+       #  push: true
+        # tags: ${{ steps.meta.outputs.tags }}
+         #labels: ${{ steps.meta.outputs.labels }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
