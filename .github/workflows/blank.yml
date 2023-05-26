@@ -52,15 +52,6 @@ jobs:
         #  echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
 
 
-    - name: generate_notes
-      id: generate_notes
-      uses: anmarkoulis/commitizen-changelog-reader@master
-      
-      with:
-          tag_name: ${{ github.ref }}
-          changelog: CHANGELOG.md
-
-      
     
 
 
