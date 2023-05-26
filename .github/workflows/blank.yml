@@ -89,6 +89,17 @@ jobs:
         echo "The next tag version will be: ${{ steps.taggerDryRun.outputs.new_tag }}"
 
 
+
+  
+    - name: Conventional changelog
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v3.7.1  
+      with:
+       github-token: ${{ secrets.CHANGELOG_RELEASE }}
+
+
+
+
     - name: Crear release y subirla
       id: create_release
       uses: actions/create-release@v1
@@ -99,12 +110,12 @@ jobs:
       with:
           tag_name: ${{ steps.versioning.outputs.version }}
           release_name: QA Release ${{ steps.versioning.outputs.version }}
-          body: |
-            Cambios en este release
-            - Primer cambio (reemplazar con variables, solo a modo de ejemplo)
-            - Segundo cambio (reemplazar con variables, solo a modo de ejemplo)
+          body: ${{ steps.changelog.outputs.tag }}
           draft: false
           prerelease: false
+
+
+
 
 
 
